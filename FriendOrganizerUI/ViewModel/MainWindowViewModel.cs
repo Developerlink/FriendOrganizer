@@ -1,4 +1,5 @@
-﻿using FriendOrganizerModelLibrary;
+﻿using FriendOrganizerDataAccessLibrary.Services;
+using FriendOrganizerModelLibrary;
 using FriendOrganizerUI.Data;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,18 @@ namespace FriendOrganizerUI.ViewModel
 {
     public class MainWindowViewModel : BaseViewModel
     {
-        private IFriendDataService _friendDataService;
+        private IFriendRepository _friendRepository;
         private Friend _selectedFriend;
 
-        public MainWindowViewModel(IFriendDataService frienDataService)
+        public MainWindowViewModel(IFriendRepository frienRepository)
         {
             Friends = new ObservableCollection<Friend>();
-            _friendDataService = frienDataService; 
+            _friendRepository = frienRepository; 
         }
 
-        public void Load()
+        public async Task LoadAsync()
         {
-            var friends = _friendDataService.GetAll();
+            var friends = await _friendRepository.GetAllAsync();
             Friends.Clear();
             foreach(var friend in friends)
             {
