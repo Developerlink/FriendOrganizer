@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31515.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FriendOrganizerUI", "FriendOrganizerUI\FriendOrganizerUI.csproj", "{08851F29-9DA4-41DC-8B98-033D662A2F91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FriendOrganizerDataAccessLibrary", "FriendOrganizerDataAccessLibrary\FriendOrganizerDataAccessLibrary.csproj", "{A7299014-9EDD-471C-AE8C-224393B67888}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FriendOrganizerModelLibrary", "FriendOrganizerModelLibrary\FriendOrganizerModelLibrary.csproj", "{AD87FDA8-DF6D-4A8F-A79F-69E40548E8CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08851F29-9DA4-41DC-8B98-033D662A2F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08851F29-9DA4-41DC-8B98-033D662A2F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08851F29-9DA4-41DC-8B98-033D662A2F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08851F29-9DA4-41DC-8B98-033D662A2F91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7299014-9EDD-471C-AE8C-224393B67888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7299014-9EDD-471C-AE8C-224393B67888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7299014-9EDD-471C-AE8C-224393B67888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7299014-9EDD-471C-AE8C-224393B67888}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD87FDA8-DF6D-4A8F-A79F-69E40548E8CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD87FDA8-DF6D-4A8F-A79F-69E40548E8CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD87FDA8-DF6D-4A8F-A79F-69E40548E8CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD87FDA8-DF6D-4A8F-A79F-69E40548E8CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FB64726F-70C9-49CE-810E-5E3223934961}
+	EndGlobalSection
+EndGlobal
