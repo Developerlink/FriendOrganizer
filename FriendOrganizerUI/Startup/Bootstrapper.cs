@@ -3,6 +3,7 @@ using FriendOrganizerDataAccessLibrary;
 using FriendOrganizerDataAccessLibrary.Services;
 using FriendOrganizerUI.Data;
 using FriendOrganizerUI.ViewModel;
+using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,16 @@ namespace FriendOrganizerUI.Startup
         {
             var builder = new ContainerBuilder();
 
+            builder.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
+
             builder.RegisterType<FriendOrganizerDbContext>().AsSelf();
             builder.RegisterType<MainWindow>().AsSelf();
             builder.RegisterType<MainWindowViewModel>().AsSelf();
             builder.RegisterType<FriendRepository>().As<IFriendRepository>();
+            builder.RegisterType<LookupRepository>().AsImplementedInterfaces();
+            builder.RegisterType<NavigationViewModel>().As<INavigationViewModel>();
+            builder.RegisterType<FriendDetailViewModel>().As<IFriendDetailViewModel>();
+
             builder.RegisterType<FriendDataService>().As<IFriendDataService>();
 
             return builder.Build();

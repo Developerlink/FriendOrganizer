@@ -1,5 +1,5 @@
 ﻿using FriendOrganizerDataAccessLibrary;
-using FriendOrganizerModelLibrary;
+using FriendOrganizerModelLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

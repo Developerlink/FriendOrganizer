@@ -1,5 +1,5 @@
 ﻿using FriendOrganizerDataAccessLibrary;
-using FriendOrganizerModelLibrary;
+using FriendOrganizerModelLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace FriendOrganizerDataAccessLibrary.Services
 {
     public class FriendRepository : IFriendRepository
     {
-        private Func<FriendOrganizerDbContext> _ctxCreater;
+        private readonly Func<FriendOrganizerDbContext> _ctxCreater;
 
         // Define a func that returns a FriendOrganizerDbContext
 
@@ -20,23 +20,33 @@ namespace FriendOrganizerDataAccessLibrary.Services
             _ctxCreater = ctxCreator;
         }
 
-        public Task<List<Friend>> GetAllAsync()
+        public async Task<Friend> GetByIdAsync(int Id)
         {
             try
             {
-                using (var ctx = _ctxCreater())
-                {
-                    var friends = ctx.Friend.AsNoTracking().ToListAsync();
-                    return friends;
-                }
+                using var ctx = _ctxCreater();
+                var friend = await ctx.Friend.FindAsync(Id);
+                return friend;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
         }
 
-
-
+        public async Task SaveAsync(Friend friend)
+        {
+            try
+            {
+                using var ctx = _ctxCreater();
+                ctx.Add(friend);
+                ctx.Entry(friend).State = EntityState.Modified;
+                await ctx.SaveChangesAsync(); 
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

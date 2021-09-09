@@ -4,11 +4,8 @@ using System.Threading.Tasks;
 
 namespace FriendOrganizerDataAccessLibrary.Services
 {
-    public interface IFriendRepository
+    public interface IItemLookupRepository
     {
-        Task<Friend> GetByIdAsync(int Id);
-        //Task<List<Friend>> GetAllAsync();
-
-        Task SaveAsync(Friend friend);
+        Task<IEnumerable<LookupItem>> GetFriendLookupAsync();
     }
 }

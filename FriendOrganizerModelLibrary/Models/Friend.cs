@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FriendOrganizerModelLibrary
+namespace FriendOrganizerModelLibrary.Models
 {
     public class Friend
     {
@@ -19,22 +19,5 @@ namespace FriendOrganizerModelLibrary
 
         [StringLength(50)]
         public string Email { get; set; }
-
-        public string FullName 
-        {
-            get
-            {
-                string fullName = "";
-                if (!string.IsNullOrEmpty(FirstName))
-                {
-                    fullName += FirstName;
-                }
-                if (!string.IsNullOrEmpty(LastName))
-                {
-                    fullName += $" {LastName}";
-                }
-                return fullName;
-            }
-        }
     }
 }

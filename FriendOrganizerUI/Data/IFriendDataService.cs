@@ -1,4 +1,4 @@
-﻿using FriendOrganizerModelLibrary;
+﻿using FriendOrganizerModelLibrary.Models;
 using System.Collections.Generic;
 
 namespace FriendOrganizerUI.Data
