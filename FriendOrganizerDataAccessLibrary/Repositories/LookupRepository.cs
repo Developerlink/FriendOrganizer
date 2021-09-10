@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FriendOrganizerDataAccessLibrary.Services
+namespace FriendOrganizerDataAccessLibrary.Repositories
 {
     public class LookupRepository : IItemLookupRepository
     {

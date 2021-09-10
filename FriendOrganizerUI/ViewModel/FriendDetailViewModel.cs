@@ -1,4 +1,4 @@
-﻿using FriendOrganizerDataAccessLibrary.Services;
+﻿using FriendOrganizerDataAccessLibrary.Repositories;
 using FriendOrganizerModelLibrary.Models;
 using FriendOrganizerUI.Event;
 using FriendOrganizerUI.Model;
@@ -40,13 +40,13 @@ namespace FriendOrganizerUI.ViewModel
 
         private bool OnSaveCanExecute()
         {
-            // TODO: Check if friend is valid
-            return true;
+            // TODO: Check if friend has changes
+            return FriendModel != null && !FriendModel.HasErrors;
         }
 
         private void OnSaveExecute()
         {
-            _friendRepository.SaveAsync(FriendModel.Friend);
+            _friendRepository.SaveAsync(FriendModel.Model);
             _eventAggregator.GetEvent<AfterFriendSavedEvent>()
                 .Publish(new AfterFriendSavedEventArgs
                 {
@@ -58,7 +58,21 @@ namespace FriendOrganizerUI.ViewModel
         public async Task LoadAsync(int friendId)
         {
             var friend = await _friendRepository.GetByIdAsync(friendId);
-            FriendModel = new FriendModel(friend);          
+            FriendModel = new FriendModel(friend);
+            FriendModel.PropertyChanged += FriendModel_PropertyChanged;
+            // Executes the command which will execute the CanExecute which will check if button can execute
+            // In this case it checks if nothing is selected
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+        }
+
+        private void FriendModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // Executes the command which will execute the CanExecute which will check if button can execute
+            // In this case it checks if there are validation errors
+            if (e.PropertyName == nameof(FriendModel.HasErrors))
+            {
+                ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+            }
         }
 
         private async void OnOpenFriendDetailView(int friendId)

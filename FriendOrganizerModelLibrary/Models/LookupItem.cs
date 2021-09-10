@@ -1,7 +1,7 @@
 ﻿
 namespace FriendOrganizerModelLibrary.Models
 {
-    public class LookupItem : BaseModel
+    public class LookupItem : NotifyPropertyChangedBase
     {
         public int Id { get; set; }
 

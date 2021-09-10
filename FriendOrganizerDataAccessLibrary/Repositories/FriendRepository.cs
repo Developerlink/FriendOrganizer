@@ -1,5 +1,4 @@
-﻿using FriendOrganizerDataAccessLibrary;
-using FriendOrganizerModelLibrary.Models;
+﻿using FriendOrganizerModelLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,26 +6,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FriendOrganizerDataAccessLibrary.Services
+namespace FriendOrganizerDataAccessLibrary.Repositories
 {
     public class FriendRepository : IFriendRepository
     {
-        private readonly Func<FriendOrganizerDbContext> _ctxCreater;
+        private readonly FriendOrganizerDbContext _ctx;
 
         // Define a func that returns a FriendOrganizerDbContext
 
-        public FriendRepository(Func<FriendOrganizerDbContext> ctxCreator)
+        public FriendRepository(FriendOrganizerDbContext ctx)
         {
-            _ctxCreater = ctxCreator;
+            _ctx = ctx;
         }
 
         public async Task<Friend> GetByIdAsync(int Id)
         {
             try
             {
-                using var ctx = _ctxCreater();
-                var friend = await ctx.Friend.FindAsync(Id);
-                return friend;
+                return await _ctx.Friend.FindAsync(Id);
             }
             catch (Exception e)
             {
@@ -38,10 +35,9 @@ namespace FriendOrganizerDataAccessLibrary.Services
         {
             try
             {
-                using var ctx = _ctxCreater();
-                ctx.Add(friend);
-                ctx.Entry(friend).State = EntityState.Modified;
-                await ctx.SaveChangesAsync(); 
+                _ctx.Friend.Attach(friend);
+                _ctx.Entry(friend).State = EntityState.Modified;
+                await _ctx.SaveChangesAsync();
             }
             catch (Exception e)
             {

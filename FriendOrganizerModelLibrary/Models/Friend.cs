@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FriendOrganizerModelLibrary.Models
@@ -18,6 +17,7 @@ namespace FriendOrganizerModelLibrary.Models
         public string LastName { get; set; }
 
         [StringLength(50)]
+        [EmailAddress]
         public string Email { get; set; }
     }
 }

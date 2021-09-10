@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace FriendOrganizerModelLibrary.Models
 {
-    public class BaseModel : INotifyPropertyChanged
+    public class NotifyPropertyChangedBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

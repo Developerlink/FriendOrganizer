@@ -1,4 +1,4 @@
-﻿using FriendOrganizerDataAccessLibrary.Services;
+﻿using FriendOrganizerDataAccessLibrary.Repositories;
 using FriendOrganizerModelLibrary.Models;
 using FriendOrganizerUI.Event;
 using Prism.Events;
