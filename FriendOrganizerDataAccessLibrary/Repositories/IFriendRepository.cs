@@ -8,7 +8,7 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
     {
         Task<Friend> GetByIdAsync(int Id);
         //Task<List<Friend>> GetAllAsync();
-
         Task SaveAsync(Friend friend);
+        bool HasChanges();
     }
 }

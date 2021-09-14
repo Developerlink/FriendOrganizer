@@ -31,6 +31,18 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
             }
         }
 
+        public bool HasChanges()
+        {
+            try
+            {
+                return _ctx.ChangeTracker.HasChanges();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         public async Task SaveAsync(Friend friend)
         {
             try
