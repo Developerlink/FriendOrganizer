@@ -18,6 +18,7 @@ namespace FriendOrganizerUI.Startup
 
             builder.RegisterType<FriendOrganizerDbContext>().AsSelf();
             builder.RegisterType<MainWindow>().AsSelf();
+            builder.RegisterType<NavigationItemViewModel>().AsSelf();
             builder.RegisterType<MainWindowViewModel>().AsSelf();
             builder.RegisterType<FriendRepository>().As<IFriendRepository>();
             builder.RegisterType<LookupRepository>().AsImplementedInterfaces();

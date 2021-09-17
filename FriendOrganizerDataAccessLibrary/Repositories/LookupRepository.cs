@@ -17,7 +17,7 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
             _ctxCreator = ctxCreator;
         }
 
-        public async Task<IEnumerable<LookupItem>> GetFriendLookupAsync()
+        public async Task<IEnumerable<LookupItem>> GetFriendsLookupAsync()
         {
             try
             {

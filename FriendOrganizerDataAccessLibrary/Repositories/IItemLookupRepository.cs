@@ -6,6 +6,6 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
 {
     public interface IItemLookupRepository
     {
-        Task<IEnumerable<LookupItem>> GetFriendLookupAsync();
+        Task<IEnumerable<LookupItem>> GetFriendsLookupAsync();
     }
 }

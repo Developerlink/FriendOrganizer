@@ -17,29 +17,13 @@ namespace FriendOrganizerUI.ViewModel
         public IItemLookupRepository _friendLookupRepository;
         private readonly IEventAggregator _eventAggregator;
 
-        public ObservableCollection<LookupItem> Friends { get; private set; }
-
-        private LookupItem _selectedFriend;
-        public LookupItem SelectedFriend
-        {
-            get { return _selectedFriend; }
-            set
-            {
-                _selectedFriend = value;
-                OnPropertyChanged();
-                if (_selectedFriend != null)
-                {
-                    _eventAggregator.GetEvent<OpenFriendDetailViewEvent>()
-                        .Publish(_selectedFriend.Id);
-                }
-            }
-        }
+        public ObservableCollection<NavigationItemViewModel> Friends { get; private set; }
 
         public NavigationViewModel(IItemLookupRepository friendLookupRepository, IEventAggregator eventAggregator)
         {
             _friendLookupRepository = friendLookupRepository;
             _eventAggregator = eventAggregator;            
-            Friends = new ObservableCollection<LookupItem>();
+            Friends = new ObservableCollection<NavigationItemViewModel>();
             _eventAggregator.GetEvent<AfterFriendSavedEvent>().Subscribe(AfterFriendSaved);
         }
 
@@ -52,11 +36,11 @@ namespace FriendOrganizerUI.ViewModel
 
         public async Task LoadAsync()
         {
-            var lookup = await _friendLookupRepository.GetFriendLookupAsync();
+            var lookup = await _friendLookupRepository.GetFriendsLookupAsync();
             Friends.Clear();
             foreach (var item in lookup)
             {
-                Friends.Add(item);
+                Friends.Add(new NavigationItemViewModel(item.Id, item.DisplayMember,_eventAggregator));
             }
         }
     }
