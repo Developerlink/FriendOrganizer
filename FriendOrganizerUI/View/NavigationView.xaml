@@ -30,6 +30,7 @@
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter Property="Cursor" Value="Hand"/>
                                             <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter TargetName="grid" Property="Background" Value="AliceBlue"/>
                                         </Trigger>
                                         <Trigger Property="IsPressed" Value="True">
                                             <Setter Property="FontWeight" Value="Normal"/>

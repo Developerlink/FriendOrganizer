@@ -10,5 +10,6 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
         //Task<List<Friend>> GetAllAsync();
         Task SaveAsync(Friend friend);
         bool HasChanges();
+        void Add(Friend friend);
     }
 }

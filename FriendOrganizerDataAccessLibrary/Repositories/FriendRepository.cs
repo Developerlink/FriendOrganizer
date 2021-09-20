@@ -19,6 +19,11 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
             _ctx = ctx;
         }
 
+        public void Add(Friend friend)
+        {
+            _ctx.Add(friend);
+        }
+
         public async Task<Friend> GetByIdAsync(int Id)
         {
             try

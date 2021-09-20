@@ -73,14 +73,21 @@ namespace FriendOrganizerUI.ViewModel
                 });
         }
 
-        public async Task LoadAsync(int friendId)
+        public async Task LoadAsync(int? friendId)
         {
-            var friend = await _friendRepository.GetByIdAsync(friendId);
+            var friend = friendId.HasValue ? await _friendRepository.GetByIdAsync(friendId.Value) : CreateNewFriend();
             FriendModel = new FriendModel(friend);
             FriendModel.PropertyChanged += FriendModel_PropertyChanged;
             // Executes the command which will execute the CanExecute which will check if button can execute
             // In this case it checks if nothing is selected
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+        }
+
+        private Friend CreateNewFriend()
+        {
+            var friend = new Friend();
+            _friendRepository.Add(friend);
+            return friend;
         }
 
         private void FriendModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
