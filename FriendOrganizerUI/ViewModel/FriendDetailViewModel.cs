@@ -2,6 +2,7 @@
 using FriendOrganizerModelLibrary.Models;
 using FriendOrganizerUI.Event;
 using FriendOrganizerUI.Model;
+using FriendOrganizerUI.View.Services;
 using Prism.Commands;
 using Prism.Events;
 using System;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace FriendOrganizerUI.ViewModel
@@ -17,6 +19,7 @@ namespace FriendOrganizerUI.ViewModel
     {
         private readonly IFriendRepository _friendRepository;
         private readonly IEventAggregator _eventAggregator;
+        private readonly IMessageDialogService _messageDialogService;
         private FriendModel _friendModel;
         private bool _hasChanges;
 
@@ -45,30 +48,44 @@ namespace FriendOrganizerUI.ViewModel
         }
 
         public ICommand SaveCommand { get; }
+        public ICommand DeleteCommand { get; }
 
-        public FriendDetailViewModel(IFriendRepository friendRepository, IEventAggregator eventAggregator)
+        public FriendDetailViewModel(IFriendRepository friendRepository, IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
         {
             _friendRepository = friendRepository;
             _eventAggregator = eventAggregator;
+            _messageDialogService = messageDialogService;
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
+            DeleteCommand = new DelegateCommand(OnDeleteExecute);
+        }
+
+        private async void OnDeleteExecute()
+        {
+            var result = _messageDialogService.ShowOkCancelDialog("Do you really want to delete?", "Question");
+            if (result == MessageDialogResult.Ok)
+            {
+                _friendRepository.Remove(FriendModel.Model);
+                await _friendRepository.SaveAsync();
+                _eventAggregator.GetEvent<AfterFriendDeletedEvent>()
+                    .Publish(FriendModel.Id);
+            }
         }
 
         private bool OnSaveCanExecute()
         {
-            // TODO: Check if friend has changes
             return FriendModel != null && !FriendModel.HasErrors && HasChanges;
         }
 
         private void OnSaveExecute()
         {
-            _friendRepository.SaveAsync(FriendModel.Model);
+            _friendRepository.SaveAsync();
             //HasChanges = _friendRepository.HasChanges();
             HasChanges = false;
             _eventAggregator.GetEvent<AfterFriendSavedEvent>()
                 .Publish(new AfterFriendSavedEventArgs
                 {
-                    Id = FriendModel.Id,
+                    Id = FriendModel.Model.Id,
                     DisplayMember = $"{FriendModel.FirstName} {FriendModel.LastName}"
                 });
         }
@@ -81,6 +98,11 @@ namespace FriendOrganizerUI.ViewModel
             // Executes the command which will execute the CanExecute which will check if button can execute
             // In this case it checks if nothing is selected
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+            if (FriendModel.Id == 0)
+            {
+                // Little trick to trigger validation when creating a new Friend
+                FriendModel.FirstName = "";
+            }
         }
 
         private Friend CreateNewFriend()

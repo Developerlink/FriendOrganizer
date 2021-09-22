@@ -25,27 +25,38 @@ namespace FriendOrganizerUI.ViewModel
             _eventAggregator = eventAggregator;
             Friends = new ObservableCollection<NavigationItemViewModel>();
             _eventAggregator.GetEvent<AfterFriendSavedEvent>().Subscribe(AfterFriendSaved);
+            _eventAggregator.GetEvent<AfterFriendDeletedEvent>().Subscribe(AfterFriendDeleted);
         }
 
-        private void AfterFriendSaved(AfterFriendSavedEventArgs obj)
+        private void AfterFriendDeleted(int friendId)
         {
-            var lookupItem = Friends.SingleOrDefault(f => f.Id == obj.Id);
-            if (lookupItem == null)
+            var friend = Friends.SingleOrDefault(f => f.Id == friendId);
+            if (friend != null)
             {
-                Friends.Add(new NavigationItemViewModel(obj.Id, obj.DisplayMember, _eventAggregator));
+                Friends.Remove(friend);
             }
-            else
-            {
-                lookupItem.DisplayMember = obj.DisplayMember;
-            }
-            //await LoadAsync();
+        }
+
+        private async void AfterFriendSaved(AfterFriendSavedEventArgs obj)
+        {
+            //var lookupItem = Friends.SingleOrDefault(f => f.Id == obj.Id);
+            //if (lookupItem == null)
+            //{
+            //    Friends.Add(new NavigationItemViewModel(obj.Id, obj.DisplayMember, _eventAggregator));
+            //}
+            //else
+            //{
+            //    lookupItem.DisplayMember = obj.DisplayMember;
+            //}
+            await LoadAsync();
+            await LoadAsync();
         }
 
         public async Task LoadAsync()
         {
-            var lookup = await _friendLookupRepository.GetFriendsLookupAsync();
+            var lookups = await _friendLookupRepository.GetFriendsLookupAsync();
             Friends.Clear();
-            foreach (var item in lookup)
+            foreach (var item in lookups)
             {
                 Friends.Add(new NavigationItemViewModel(item.Id, item.DisplayMember, _eventAggregator));
             }

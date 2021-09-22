@@ -26,9 +26,8 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
                 {
                     Id = f.Id,
                     DisplayMember = f.FirstName + " " + f.LastName
-                })
+                })                    
                 .ToListAsync();
-
                 return friends;
             }
             catch (Exception)

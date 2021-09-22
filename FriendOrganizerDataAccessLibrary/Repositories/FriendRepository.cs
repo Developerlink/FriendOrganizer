@@ -21,7 +21,7 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
 
         public void Add(Friend friend)
         {
-            _ctx.Add(friend);
+            _ctx.Friend.Add(friend);
         }
 
         public async Task<Friend> GetByIdAsync(int Id)
@@ -48,12 +48,17 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
             }
         }
 
-        public async Task SaveAsync(Friend friend)
+        public void Remove(Friend friend)
+        {
+            _ctx.Remove(friend);
+        }
+
+        public async Task SaveAsync()
         {
             try
             {
-                _ctx.Friend.Attach(friend);
-                _ctx.Entry(friend).State = EntityState.Modified;
+                //_ctx.Friend.Attach(friend);
+                //_ctx.Entry(friend).State = EntityState.Modified;
                 await _ctx.SaveChangesAsync();
             }
             catch (Exception e)
