@@ -5,15 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FriendOrganizerUI.Model
+namespace FriendOrganizerModelLibrary.Models
 {
-    public class ProgrammingLanguage
+    public class FriendPhoneNumber
     {
-        [Key]
         public int Id { get; set; }
 
+        [Phone]
         [Required]
-        [StringLength(50)]
-        public string Name { get; set; }
+        public string Number { get; set; }
+        public int FriendId { get; set; }
+        public Friend Friend { get; set; }
     }
 }

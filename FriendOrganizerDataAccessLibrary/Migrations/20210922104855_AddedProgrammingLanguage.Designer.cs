@@ -4,14 +4,16 @@ using FriendOrganizerDataAccessLibrary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FriendOrganizerDataAccessLibrary.Migrations
 {
     [DbContext(typeof(FriendOrganizerDbContext))]
-    partial class FriendOrganizerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210922104855_AddedProgrammingLanguage")]
+    partial class AddedProgrammingLanguage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,27 +51,6 @@ namespace FriendOrganizerDataAccessLibrary.Migrations
                     b.ToTable("Friend");
                 });
 
-            modelBuilder.Entity("FriendOrganizerModelLibrary.Models.FriendPhoneNumber", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("FriendId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Number")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FriendId");
-
-                    b.ToTable("FriendPhoneNumber");
-                });
-
             modelBuilder.Entity("FriendOrganizerModelLibrary.Models.ProgrammingLanguage", b =>
                 {
                     b.Property<int>("Id")
@@ -94,22 +75,6 @@ namespace FriendOrganizerDataAccessLibrary.Migrations
                         .HasForeignKey("FavoriteLanguageId");
 
                     b.Navigation("FavoriteLanguage");
-                });
-
-            modelBuilder.Entity("FriendOrganizerModelLibrary.Models.FriendPhoneNumber", b =>
-                {
-                    b.HasOne("FriendOrganizerModelLibrary.Models.Friend", "Friend")
-                        .WithMany("PhoneNumbers")
-                        .HasForeignKey("FriendId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Friend");
-                });
-
-            modelBuilder.Entity("FriendOrganizerModelLibrary.Models.Friend", b =>
-                {
-                    b.Navigation("PhoneNumbers");
                 });
 #pragma warning restore 612, 618
         }

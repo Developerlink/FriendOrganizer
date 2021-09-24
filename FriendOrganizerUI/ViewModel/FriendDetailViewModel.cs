@@ -7,6 +7,8 @@ using Prism.Commands;
 using Prism.Events;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +22,7 @@ namespace FriendOrganizerUI.ViewModel
         private readonly IFriendRepository _friendRepository;
         private readonly IEventAggregator _eventAggregator;
         private readonly IMessageDialogService _messageDialogService;
+        private readonly IProgrammingLanguageLookupRepository _programmingLanguageLookupRepository;
         private FriendModel _friendModel;
         private bool _hasChanges;
 
@@ -30,6 +33,16 @@ namespace FriendOrganizerUI.ViewModel
             {
                 _friendModel = value;
                 OnPropertyChanged();
+            }
+        }
+        private FriendPhoneNumberModel _selectedPhoneNumber;
+
+        public FriendPhoneNumberModel SelectedPhoneNumber        
+        {
+            get { return _selectedPhoneNumber; }
+            set { _selectedPhoneNumber = value;
+                OnPropertyChanged();
+                ((DelegateCommand)RemovePhoneNumberCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -46,18 +59,45 @@ namespace FriendOrganizerUI.ViewModel
                 }
             }
         }
-
         public ICommand SaveCommand { get; }
         public ICommand DeleteCommand { get; }
-
-        public FriendDetailViewModel(IFriendRepository friendRepository, IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
+        public ICommand AddPhoneNumberCommand { get; }
+        public ICommand RemovePhoneNumberCommand { get; }
+        public ObservableCollection<LookupItem> ProgrammingLanguages { get; }
+        public ObservableCollection<FriendPhoneNumberModel> PhoneNumbers { get; }
+        public FriendDetailViewModel(IFriendRepository friendRepository,
+            IEventAggregator eventAggregator,
+            IMessageDialogService messageDialogService,
+            IProgrammingLanguageLookupRepository programmingLanguageLookupRepository)
         {
             _friendRepository = friendRepository;
             _eventAggregator = eventAggregator;
             _messageDialogService = messageDialogService;
+            _programmingLanguageLookupRepository = programmingLanguageLookupRepository;
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
             DeleteCommand = new DelegateCommand(OnDeleteExecute);
+            AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneExecute);
+            RemovePhoneNumberCommand = new DelegateCommand(OnRemovePhoneNumbeExecute, OnRemovePhoneNumberCanExecute);
+
+            ProgrammingLanguages = new ObservableCollection<LookupItem>();
+            PhoneNumbers = new ObservableCollection<FriendPhoneNumberModel>();
+        }
+
+        private bool OnRemovePhoneNumberCanExecute()
+        {
+            return true;
+            //throw new NotImplementedException();
+        }
+
+        private void OnRemovePhoneNumbeExecute()
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void OnAddPhoneExecute()
+        {
+            //throw new NotImplementedException();
         }
 
         private async void OnDeleteExecute()
@@ -74,7 +114,10 @@ namespace FriendOrganizerUI.ViewModel
 
         private bool OnSaveCanExecute()
         {
-            return FriendModel != null && !FriendModel.HasErrors && HasChanges;
+            return FriendModel != null 
+                && !FriendModel.HasErrors 
+                && PhoneNumbers.All(p => !p.HasErrors)
+                && HasChanges;
         }
 
         private void OnSaveExecute()
@@ -93,6 +136,42 @@ namespace FriendOrganizerUI.ViewModel
         public async Task LoadAsync(int? friendId)
         {
             var friend = friendId.HasValue ? await _friendRepository.GetByIdAsync(friendId.Value) : CreateNewFriend();
+
+            InitializeFriend(friend);
+            InitializeFriendPhoneNumbers(friend.PhoneNumbers);
+
+            await LoadProgrammingLanguagesLookupAsync();
+        }
+
+        private void InitializeFriendPhoneNumbers(ICollection<FriendPhoneNumber> phoneNumbers)
+        {
+            foreach (var model in PhoneNumbers)
+            {
+                model.PropertyChanged -= FriendPhoneNumberModel_PropertyChanged;
+            }
+            PhoneNumbers.Clear();
+            foreach (var friendPhoneNumber in phoneNumbers)
+            {
+                var model = new FriendPhoneNumberModel(friendPhoneNumber);
+                PhoneNumbers.Add(model);
+                model.PropertyChanged += FriendPhoneNumberModel_PropertyChanged;
+            }
+        } 
+
+        private void FriendPhoneNumberModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (!HasChanges)
+            {
+                HasChanges = _friendRepository.HasChanges();
+            }
+            if (e.PropertyName == nameof(FriendPhoneNumberModel.HasErrors))
+            {
+                ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+            }
+        }
+
+        private void InitializeFriend(Friend friend)
+        {
             FriendModel = new FriendModel(friend);
             FriendModel.PropertyChanged += FriendModel_PropertyChanged;
             // Executes the command which will execute the CanExecute which will check if button can execute
@@ -102,6 +181,17 @@ namespace FriendOrganizerUI.ViewModel
             {
                 // Little trick to trigger validation when creating a new Friend
                 FriendModel.FirstName = "";
+            }
+        }
+
+        private async Task LoadProgrammingLanguagesLookupAsync()
+        {
+            ProgrammingLanguages.Clear();
+            ProgrammingLanguages.Add(new NullLookupItem() { DisplayMember = " - " });
+            var lookup = await _programmingLanguageLookupRepository.GetProgrammingLanguageLookupAsync();
+            foreach (var lookupItem in lookup)
+            {
+                ProgrammingLanguages.Add(lookupItem);
             }
         }
 

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +12,8 @@ namespace FriendOrganizerDataAccessLibrary
     public class FriendOrganizerDbContext : DbContext
     {
         public DbSet<Friend> Friend { get; set; }
+        public DbSet<ProgrammingLanguage> ProgrammingLanguage { get; set; }
+        public DbSet<FriendPhoneNumber> FriendPhoneNumber { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

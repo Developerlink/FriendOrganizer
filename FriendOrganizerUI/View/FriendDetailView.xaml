@@ -6,34 +6,60 @@
              xmlns:local="clr-namespace:FriendOrganizerUI.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-        <Grid >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition />
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Label Content="First Name" Margin="10,10,10,0"/>
-            <TextBox Grid.Row="1" Text="{Binding FriendModel.FirstName, 
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Content="First Name" Margin="10,10,10,0"/>
+        <TextBox Grid.Row="1" Text="{Binding FriendModel.FirstName, 
                 Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,0"/>
 
-            <Label Grid.Row="2" Content="Last Name" Margin="10,10,10,0"/>
-            <TextBox Grid.Row="3" Text="{Binding FriendModel.LastName, TargetNullValue='', 
+        <Label Grid.Row="2" Content="Last Name" Margin="10,10,10,0"/>
+        <TextBox Grid.Row="3" Text="{Binding FriendModel.LastName, TargetNullValue='', 
                 Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,0"/>
 
-            <Label Grid.Row="4" Content="Email" Margin="10,10,10,0"/>
-            <TextBox Grid.Row="5" Text="{Binding FriendModel.Email, TargetNullValue='',
+        <Label Grid.Row="4" Content="Email" Margin="10,10,10,0"/>
+        <TextBox Grid.Row="5" Text="{Binding FriendModel.Email, TargetNullValue='',
                 Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,0"/>
 
-        <StackPanel Grid.Row="7" Orientation="Horizontal">
+        <Label Grid.Row="6" Content="Favorite Language" Margin="10 0" />
+        <ComboBox Grid.Row="7" ItemsSource="{Binding ProgrammingLanguages}"
+                  DisplayMemberPath="DisplayMember"
+                  SelectedValuePath="Id"
+                  SelectedValue="{Binding FriendModel.FavoriteLanguageId, Mode=TwoWay}"
+                  Margin="10 0 10 10" />
+        
+        <DockPanel Grid.Row="8" Margin="10">
+            <StackPanel DockPanel.Dock="Right">
+                <Button Content="Add" Width="125" Margin="10" 
+                    Command="{Binding AddPhoneNumberCommand}"/>
+                <Button Content="Remove" Width="125" Margin="10"
+                    Command="{Binding RemovePhoneNumberCommand}"/>
+            </StackPanel>
+            <DataGrid ItemsSource="{Binding PhoneNumbers}"
+                      SelectedItem="{Binding SelectedPhoneNumber, Mode=TwoWay}"
+                      AutoGenerateColumns="False" RowHeaderWidth="0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Phone Numbers" Width="*"
+                                        Binding="{Binding Number, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+        
+        <StackPanel Grid.Row="9" Orientation="Horizontal">
             <Button Content="Save" Width="125" Margin="10" 
                     Command="{Binding SaveCommand}"/>
             <Button Content="Delete" Width="125" Margin="10"
                     Command="{Binding DeleteCommand}"/>
         </StackPanel>
-        </Grid>
+    </Grid>
 </UserControl>

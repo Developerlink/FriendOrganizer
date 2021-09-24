@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FriendOrganizerDataAccessLibrary.Repositories
 {
-    public class LookupRepository : IItemLookupRepository
+    public class LookupRepository : IFriendLookupRepository, IProgrammingLanguageLookupRepository
     {
         private readonly Func<FriendOrganizerDbContext> _ctxCreator;
 
@@ -26,7 +26,27 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
                 {
                     Id = f.Id,
                     DisplayMember = f.FirstName + " " + f.LastName
-                })                    
+                })
+                .ToListAsync();
+                return friends;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetProgrammingLanguageLookupAsync()
+        {
+            try
+            {
+                using var ctx = _ctxCreator();
+                var friends = await ctx.ProgrammingLanguage.AsNoTracking().Select(f => new LookupItem
+                {
+                    Id = f.Id,
+                    DisplayMember = f.Name
+                })
                 .ToListAsync();
                 return friends;
             }

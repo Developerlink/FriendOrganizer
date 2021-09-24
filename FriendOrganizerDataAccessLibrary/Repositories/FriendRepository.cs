@@ -28,7 +28,7 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
         {
             try
             {
-                return await _ctx.Friend.FindAsync(Id);
+                return await _ctx.Friend.Include(f => f.PhoneNumbers).SingleAsync(f => f.Id == Id);
             }
             catch (Exception e)
             {

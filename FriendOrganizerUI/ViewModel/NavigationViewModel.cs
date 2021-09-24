@@ -14,12 +14,12 @@ namespace FriendOrganizerUI.ViewModel
 {
     public class NavigationViewModel : BaseViewModel, INavigationViewModel
     {
-        public IItemLookupRepository _friendLookupRepository;
+        public IFriendLookupRepository _friendLookupRepository;
         private readonly IEventAggregator _eventAggregator;
 
         public ObservableCollection<NavigationItemViewModel> Friends { get; private set; }
 
-        public NavigationViewModel(IItemLookupRepository friendLookupRepository, IEventAggregator eventAggregator)
+        public NavigationViewModel(IFriendLookupRepository friendLookupRepository, IEventAggregator eventAggregator)
         {
             _friendLookupRepository = friendLookupRepository;
             _eventAggregator = eventAggregator;
