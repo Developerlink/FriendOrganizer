@@ -8,63 +8,22 @@ using System.Threading.Tasks;
 
 namespace FriendOrganizerDataAccessLibrary.Repositories
 {
-    public class FriendRepository : IFriendRepository
+    public class FriendRepository : GenericRepository<Friend, FriendOrganizerDbContext>,
+                                    IFriendRepository
     {
-        private readonly FriendOrganizerDbContext _ctx;
-
-        // Define a func that returns a FriendOrganizerDbContext
-
-        public FriendRepository(FriendOrganizerDbContext ctx)
+        public FriendRepository(FriendOrganizerDbContext context)
+            : base(context)
         {
-            _ctx = ctx;
         }
 
-        public void Add(Friend friend)
+        public override async Task<Friend> GetByIdAsync(int Id)
         {
-            _ctx.Friend.Add(friend);
+            return await Context.Friend.Include(f => f.PhoneNumbers).SingleAsync(f => f.Id == Id);
         }
 
-        public async Task<Friend> GetByIdAsync(int Id)
+        public void RemovePhoneNumber(FriendPhoneNumber model)
         {
-            try
-            {
-                return await _ctx.Friend.Include(f => f.PhoneNumbers).SingleAsync(f => f.Id == Id);
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-        }
-
-        public bool HasChanges()
-        {
-            try
-            {
-                return _ctx.ChangeTracker.HasChanges();
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-        }
-
-        public void Remove(Friend friend)
-        {
-            _ctx.Remove(friend);
-        }
-
-        public async Task SaveAsync()
-        {
-            try
-            {
-                //_ctx.Friend.Attach(friend);
-                //_ctx.Entry(friend).State = EntityState.Modified;
-                await _ctx.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+            Context.FriendPhoneNumber.Remove(model);
         }
     }
 }

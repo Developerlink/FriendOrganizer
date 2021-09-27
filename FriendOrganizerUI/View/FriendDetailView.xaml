@@ -31,7 +31,7 @@
         <TextBox Grid.Row="5" Text="{Binding FriendModel.Email, TargetNullValue='',
                 Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,0"/>
 
-        <Label Grid.Row="6" Content="Favorite Language" Margin="10 0" />
+        <Label Grid.Row="6" Content="Favorite Language" Margin="10 10 10 0" />
         <ComboBox Grid.Row="7" ItemsSource="{Binding ProgrammingLanguages}"
                   DisplayMemberPath="DisplayMember"
                   SelectedValuePath="Id"
@@ -50,6 +50,8 @@
                       AutoGenerateColumns="False" RowHeaderWidth="0">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Phone Numbers" Width="*"
+                                        ElementStyle="{StaticResource DataGridColumnStyle}"
+                                        EditingElementStyle="{StaticResource DataGridEditingColumnStyle}"
                                         Binding="{Binding Number, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </DataGrid.Columns>
             </DataGrid>

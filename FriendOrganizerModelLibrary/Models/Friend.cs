@@ -25,5 +25,10 @@ namespace FriendOrganizerModelLibrary.Models
 
         public ProgrammingLanguage FavoriteLanguage { get; set; }
         public ICollection<FriendPhoneNumber> PhoneNumbers { get; set; }
+
+        public Friend()
+        {
+            PhoneNumbers = new List<FriendPhoneNumber>();
+        }
     }
 }

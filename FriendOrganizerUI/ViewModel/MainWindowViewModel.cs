@@ -12,46 +12,46 @@ namespace FriendOrganizerUI.ViewModel
     public class MainWindowViewModel : BaseViewModel
     {
         private IEventAggregator _eventAggregator;
-        private IMessageDialogService _messageDialogService;
         private Func<IFriendDetailViewModel> _friendDetailViewModelCreator;
-        private IFriendDetailViewModel _friendDetailViewModel;
+        private IDetailViewModel _detailViewModel;
+        private IMessageDialogService _messageDialogService;
 
-        public MainWindowViewModel(INavigationViewModel navigationViewModel, Func<IFriendDetailViewModel> friendDetailViewModelCreator, IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
+        public MainWindowViewModel(INavigationViewModel navigationViewModel, Func<IFriendDetailViewModel> friendDetailViewModelCreator, 
+            IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
         {
             _messageDialogService = messageDialogService;
             _friendDetailViewModelCreator = friendDetailViewModelCreator;
             _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<OpenFriendDetailViewEvent>()
-                .Subscribe(OnOpenFriendDetailView);
-            _eventAggregator.GetEvent<AfterFriendDeletedEvent>()
-                .Subscribe(AfterFriendDeleted);
+            _eventAggregator.GetEvent<OpenDetailViewEvent>()
+                .Subscribe(OnOpenDetailView);
+            _eventAggregator.GetEvent<AfterDetailDeletedEvent>()
+                .Subscribe(AfterDetailDeleted);
 
-            CreateNewFriendCommand = new DelegateCommand(OnCreateFriendExecute);
+            CreateNewDetailCommand = new DelegateCommand<Type>(OnCreateNewDetailExecute);
 
             NavigationViewModel = navigationViewModel;
-        }        
+        }
 
         public async Task LoadAsync()
         {
             await NavigationViewModel.LoadAsync();
         }
 
-        public ICommand CreateNewFriendCommand { get; }
+        public ICommand CreateNewDetailCommand { get; }
         public INavigationViewModel NavigationViewModel { get; }
-
-        public IFriendDetailViewModel FriendDetailViewModel
+        public IDetailViewModel DetailViewModel
         {
-            get { return _friendDetailViewModel; }
+            get { return _detailViewModel; }
             private set
             {
-                _friendDetailViewModel = value;
+                _detailViewModel = value;
                 OnPropertyChanged();
             }
         }
 
-        private async void OnOpenFriendDetailView(int? friendId)
+        private async void OnOpenDetailView(OpenDetailViewEventArgs args)
         {
-            if (FriendDetailViewModel != null && FriendDetailViewModel.HasChanges)
+            if (DetailViewModel != null && DetailViewModel.HasChanges)
             {
                 var result = _messageDialogService.ShowOkCancelDialog("You have made changes. Do you want to navigate away anyway?", "Question");
                 if (result == MessageDialogResult.Cancel)
@@ -59,18 +59,23 @@ namespace FriendOrganizerUI.ViewModel
                     return;
                 }
             }
-            FriendDetailViewModel = _friendDetailViewModelCreator();
-            await FriendDetailViewModel.LoadAsync(friendId);
+
+            if (args.ViewModelName == nameof(FriendDetailViewModel))
+            {
+                DetailViewModel = _friendDetailViewModelCreator();
+            }
+
+            await DetailViewModel.LoadAsync(args.Id);
         }
 
-        private void OnCreateFriendExecute()
+        private void OnCreateNewDetailExecute(Type viewModelType)
         {
-            OnOpenFriendDetailView(null);
+            OnOpenDetailView(new OpenDetailViewEventArgs { ViewModelName = viewModelType.Name });
         }
 
-        private void AfterFriendDeleted(int friendId)
+        private void AfterDetailDeleted(AfterDetailDeletedEventArgs args)
         {
-            FriendDetailViewModel = null;
+            DetailViewModel = null;
         }
     }
 }
