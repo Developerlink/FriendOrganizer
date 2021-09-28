@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace FriendOrganizerDataAccessLibrary.Repositories
 {
-    public interface IFriendLookupRepository
+    public interface IMeetingLookupRepository
     {
-        Task<IEnumerable<LookupItem>> GetFriendLookupAsync();
+        Task<List<LookupItem>> GetMeetingLookupAsync();
     }
 }

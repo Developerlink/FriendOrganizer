@@ -14,6 +14,7 @@ namespace FriendOrganizerDataAccessLibrary
         public DbSet<Friend> Friend { get; set; }
         public DbSet<ProgrammingLanguage> ProgrammingLanguage { get; set; }
         public DbSet<FriendPhoneNumber> FriendPhoneNumber { get; set; }
+        public DbSet<Meeting> Meeting { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

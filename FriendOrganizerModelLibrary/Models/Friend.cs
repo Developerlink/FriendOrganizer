@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,10 +26,12 @@ namespace FriendOrganizerModelLibrary.Models
 
         public ProgrammingLanguage FavoriteLanguage { get; set; }
         public ICollection<FriendPhoneNumber> PhoneNumbers { get; set; }
+        public ICollection<Meeting> Meetings { get; set; }
 
         public Friend()
         {
-            PhoneNumbers = new List<FriendPhoneNumber>();
+            PhoneNumbers = new Collection<FriendPhoneNumber>();
+            Meetings = new Collection<Meeting>();
         }
     }
 }

@@ -21,9 +21,15 @@ namespace FriendOrganizerUI.Startup
             builder.RegisterType<NavigationItemViewModel>().AsSelf();
             builder.RegisterType<MainWindowViewModel>().AsSelf();
             builder.RegisterType<FriendRepository>().As<IFriendRepository>();
+            builder.RegisterType<MeetingRepository>().As<IMeetingRepository>();
+
             builder.RegisterType<LookupRepository>().AsImplementedInterfaces();
             builder.RegisterType<NavigationViewModel>().As<INavigationViewModel>();
-            builder.RegisterType<FriendDetailViewModel>().As<IFriendDetailViewModel>();
+            builder.RegisterType<FriendDetailViewModel>()
+                .Keyed<IDetailViewModel>(nameof(FriendDetailViewModel));
+            builder.RegisterType<MeetingDetailViewModel>()
+                .Keyed<IDetailViewModel>(nameof(MeetingDetailViewModel));
+
             builder.RegisterType<FriendDataService>().As<IFriendDataService>();
             builder.RegisterType<MessageDialogService>().As<IMessageDialogService>();
 

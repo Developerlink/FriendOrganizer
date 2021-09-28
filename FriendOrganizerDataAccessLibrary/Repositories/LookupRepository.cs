@@ -8,7 +8,10 @@ using System.Threading.Tasks;
 
 namespace FriendOrganizerDataAccessLibrary.Repositories
 {
-    public class LookupRepository : IFriendLookupRepository, IProgrammingLanguageLookupRepository
+    public class LookupRepository : 
+        IFriendLookupRepository, 
+        IProgrammingLanguageLookupRepository,
+        IMeetingLookupRepository
     {
         private readonly Func<FriendOrganizerDbContext> _ctxCreator;
 
@@ -17,7 +20,7 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
             _ctxCreator = ctxCreator;
         }
 
-        public async Task<IEnumerable<LookupItem>> GetFriendsLookupAsync()
+        public async Task<IEnumerable<LookupItem>> GetFriendLookupAsync()
         {
             try
             {
@@ -32,7 +35,25 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
 
+        public async Task<List<LookupItem>> GetMeetingLookupAsync()
+        {
+            try
+            {
+                using var ctx = _ctxCreator();
+                var meetings = await ctx.Meeting.AsNoTracking().Select(f => new LookupItem
+                {
+                    Id = f.Id,
+                    DisplayMember = f.Title
+                })
+                .ToListAsync();
+                return meetings;
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }
@@ -52,7 +73,6 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
