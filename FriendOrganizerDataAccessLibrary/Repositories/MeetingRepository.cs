@@ -1,5 +1,6 @@
 ﻿using FriendOrganizerModelLibrary.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FriendOrganizerDataAccessLibrary.Repositories
@@ -9,6 +10,11 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
         public MeetingRepository(FriendOrganizerDbContext context)
             : base(context)
         {
+        }
+
+        public async Task<List<Friend>> GetAllFriendsAsync()
+        {
+            return await Context.Friend.ToListAsync();
         }
 
         public async override Task<Meeting> GetByIdAsync(int id)
