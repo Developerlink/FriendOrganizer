@@ -16,7 +16,6 @@ namespace FriendOrganizerUI.ViewModel
     public class MeetingDetailViewModel : DetailViewModelBase, IMeetingDetailViewModel
     {
         private IMeetingRepository _meetingRepository;
-        private IMessageDialogService _messageDialogService;
         private List<Friend> _allFriends;
 
         private MeetingModel _meetingModel;
@@ -61,10 +60,9 @@ namespace FriendOrganizerUI.ViewModel
         public MeetingDetailViewModel(IEventAggregator eventAggregator,
             IMessageDialogService messageDialogService,
             IMeetingRepository meetingRepository)
-            : base(eventAggregator) // Constructor takes the eventAggregator argument and passes it into the base constructor
+            : base(eventAggregator, messageDialogService) // Constructor takes the eventAggregator argument and passes it into the base constructor
         {
             _meetingRepository = meetingRepository;
-            _messageDialogService = messageDialogService;
 
             AddedFriends = new ObservableCollection<Friend>();
             AvailableFriends = new ObservableCollection<Friend>();
@@ -104,6 +102,8 @@ namespace FriendOrganizerUI.ViewModel
             AddedFriends.Add(friendToAdd);
             AvailableFriends.Remove(friendToAdd);
             HasChanges = _meetingRepository.HasChanges();
+            Id = MeetingModel.Id;
+            SetTitle(MeetingModel.Title);
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
             //SelectedAvailableFriend = null;
         }
@@ -114,6 +114,8 @@ namespace FriendOrganizerUI.ViewModel
                 ? await _meetingRepository.GetByIdAsync(meetingId.Value)
                 : CreateNewMeeting();
 
+            Id = meeting.Id;
+            SetTitle(meeting.Title);
             InitializeMeeting(meeting);
 
             _allFriends = await _meetingRepository.GetAllFriendsAsync();
@@ -141,7 +143,7 @@ namespace FriendOrganizerUI.ViewModel
 
         protected override void OnDeleteExecute()
         {
-            var result = _messageDialogService.ShowOkCancelDialog("Are you sure you want to delete?", "Question");
+            var result = MessageDialogService.ShowOkCancelDialog("Are you sure you want to delete?", "Question");
             if (result == MessageDialogResult.Ok)
             {
                 _meetingRepository.Remove(MeetingModel.Model);
@@ -197,6 +199,11 @@ namespace FriendOrganizerUI.ViewModel
             {
                 ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
             }
+            if (e.PropertyName == nameof(MeetingModel.Title))
+            {
+                SetTitle(MeetingModel.Title);
+            }
         }
+
     }
 }

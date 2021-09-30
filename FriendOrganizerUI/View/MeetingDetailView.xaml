@@ -42,15 +42,14 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
             <Label Content="Available Friends"/>
             <ListView Grid.Row="1" ItemsSource="{Binding AvailableFriends}"
-                      SelectedItem="{Binding SelectedAvailableFriend}"
-                      Height="240"/>
+                      SelectedItem="{Binding SelectedAvailableFriend}"/>
 
             <StackPanel Grid.Row="1" Grid.Column="1">
                 <Button Content="&#x2794;" Margin="10" Command="{Binding AddFriendCommand}" Padding="10 0"/>
