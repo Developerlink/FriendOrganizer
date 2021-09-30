@@ -42,19 +42,19 @@ namespace FriendOrganizerUI.ViewModel
             {
                 _selectedAddedFriend = value;
                 OnPropertyChanged();
-                ((DelegateCommand)AddFriendCommand).RaiseCanExecuteChanged();
+                ((DelegateCommand)RemoveFriendCommand).RaiseCanExecuteChanged();
             }
         }
 
         private Friend _selectedAvailableFriend;
-        public Friend SelectedAvailableFriend
+        public Friend SelectedAvailableFriend 
         {
             get { return _selectedAvailableFriend; }
             set
             {
                 _selectedAvailableFriend = value;
                 OnPropertyChanged();
-                ((DelegateCommand)RemoveFriendCommand).RaiseCanExecuteChanged();
+                ((DelegateCommand)AddFriendCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -75,22 +75,37 @@ namespace FriendOrganizerUI.ViewModel
 
         private bool OnRemoveFriendCanExecute()
         {
-            return SelectedAvailableFriend != null;
+            return SelectedAddedFriend != null;
         }
 
         private void OnRemoveFriendExecute()
         {
-            throw new NotImplementedException();
+            var friendToRemove = SelectedAddedFriend;
+
+            MeetingModel.Model.Friends.Remove(friendToRemove);
+            AddedFriends.Remove(friendToRemove);
+            AvailableFriends.Add(friendToRemove);
+            HasChanges = _meetingRepository.HasChanges();
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+            // No need to manually set to null since being removed from the listview will do this automatically since they are bound.
+            //SelectedAddedFriend = null;
         }
 
         private bool OnAddFriendCanExecute()
         {
-            return SelectedAddedFriend != null;
+            return SelectedAvailableFriend != null;
         }
 
         private void OnAddFriendExecute()
         {
-            throw new NotImplementedException();
+            var friendToAdd = SelectedAvailableFriend;
+
+            MeetingModel.Model.Friends.Add(friendToAdd);
+            AddedFriends.Add(friendToAdd);
+            AvailableFriends.Remove(friendToAdd);
+            HasChanges = _meetingRepository.HasChanges();
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+            //SelectedAvailableFriend = null;
         }
 
         public override async Task LoadAsync(int? meetingId)

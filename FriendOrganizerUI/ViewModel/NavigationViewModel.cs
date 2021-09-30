@@ -69,7 +69,7 @@ namespace FriendOrganizerUI.ViewModel
                 AfterDetailSaved(Meetings, args);
             }
             await LoadAsync();
-            //await LoadAsync();
+            await LoadAsync();
         }
 
         private void AfterDetailSaved(ObservableCollection<NavigationItemViewModel> items, AfterDetailSavedEventArgs args)
