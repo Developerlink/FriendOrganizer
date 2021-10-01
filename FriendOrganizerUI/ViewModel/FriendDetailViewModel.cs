@@ -30,6 +30,7 @@ namespace FriendOrganizerUI.ViewModel
             {
                 _friendModel = value;
                 OnPropertyChanged();
+                HasChanges = true;
             }
         }
         private FriendPhoneNumberModel _selectedPhoneNumber;
@@ -91,7 +92,11 @@ namespace FriendOrganizerUI.ViewModel
             FriendModel.Model.PhoneNumbers.Add(newNumber.Model);
             newNumber.Number = "";
         }
-        
+
+        protected override bool OnDeleteCanExecute()
+        {
+            return FriendModel != null && FriendModel.Id > 0;
+        }
 
         protected override async void OnDeleteExecute()
         {
@@ -120,19 +125,19 @@ namespace FriendOrganizerUI.ViewModel
 
         protected override void OnSaveExecute()
         {
-            _friendRepository.SaveAsync();
+            _friendRepository.SaveFriendAsync(FriendModel.Model);
             //HasChanges = _friendRepository.HasChanges();
-            Id = FriendModel.Id;
             SetTitle($"{FriendModel.FirstName} {FriendModel.LastName}");
+            Id = FriendModel.Id;
             HasChanges = false;
             RaiseDetailSavedEvent(FriendModel.Id, $"{FriendModel.FirstName} {FriendModel.LastName}");
         }
 
-        public override async Task LoadAsync(int? friendId)
+        public override async Task LoadAsync(int friendId)
         {
-            var friend = friendId.HasValue ? await _friendRepository.GetByIdAsync(friendId.Value) : CreateNewFriend();
+            var friend = friendId > 0 ? await _friendRepository.GetByIdAsync(friendId) : CreateNewFriend();
 
-            Id = friend.Id;
+            Id = friendId;
             SetTitle($"{friend.FirstName} {friend.LastName}");
 
             InitializeFriend(friend);
@@ -196,7 +201,6 @@ namespace FriendOrganizerUI.ViewModel
         private Friend CreateNewFriend()
         {
             var friend = new Friend();
-            _friendRepository.Add(friend);
             return friend;
         }
 

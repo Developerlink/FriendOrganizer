@@ -20,11 +20,11 @@ namespace FriendOrganizerUI.ViewModel
             EventAggregator = eventAggregator;
             MessageDialogService = messageDialogService;
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
-            DeleteCommand = new DelegateCommand(OnDeleteExecute);
+            DeleteCommand = new DelegateCommand(OnDeleteExecute, OnDeleteCanExecute);
             CloseDetailViewCommand = new DelegateCommand(OnCloseDetailViewExecute);
-        }        
+        }
 
-        public abstract Task LoadAsync(int? id);
+        public abstract Task LoadAsync(int id);
         public DelegateCommand SaveCommand { get; }
         public DelegateCommand DeleteCommand { get; }
         public DelegateCommand CloseDetailViewCommand { get; }
@@ -69,6 +69,9 @@ namespace FriendOrganizerUI.ViewModel
         protected abstract bool OnSaveCanExecute();
 
         protected abstract void OnSaveExecute();
+
+        protected abstract bool OnDeleteCanExecute();
+
 
         protected virtual void RaiseDetailDeletedEvent(int modelId)
         {

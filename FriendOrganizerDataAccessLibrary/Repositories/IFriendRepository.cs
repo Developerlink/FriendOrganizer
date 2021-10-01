@@ -8,5 +8,6 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
     {        
         void RemovePhoneNumber(FriendPhoneNumber model);
         Task<bool> HasMeetingsAsync(int friendId);
+        Task SaveFriendAsync(Friend friend);
     }
 }

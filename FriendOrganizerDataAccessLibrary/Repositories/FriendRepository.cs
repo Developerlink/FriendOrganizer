@@ -32,5 +32,11 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
         {
             Context.FriendPhoneNumber.Remove(model);
         }
+
+        public async Task SaveFriendAsync(Friend friend)
+        {
+            await Context.AddAsync(friend);
+            await SaveAsync();
+        }
     }
 }

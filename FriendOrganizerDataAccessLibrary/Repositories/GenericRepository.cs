@@ -37,7 +37,8 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
         {
             Context.Set<TEntity>().Remove(model);
         }
-        public async Task SaveAsync()
+
+        public virtual async Task SaveAsync()
         {
             await Context.SaveChangesAsync();
         }
