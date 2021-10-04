@@ -37,6 +37,7 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
         {
             await Context.AddAsync(friend);
             await SaveAsync();
+            var test = friend;
         }
     }
 }

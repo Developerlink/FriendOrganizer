@@ -30,7 +30,6 @@ namespace FriendOrganizerUI.ViewModel
             {
                 _friendModel = value;
                 OnPropertyChanged();
-                HasChanges = true;
             }
         }
         private FriendPhoneNumberModel _selectedPhoneNumber;
@@ -57,11 +56,22 @@ namespace FriendOrganizerUI.ViewModel
             _friendRepository = friendRepository;
             _programmingLanguageLookupRepository = programmingLanguageLookupRepository;
 
+            eventAggregator.GetEvent<AfterCollectionSavedEvent>()
+                .Subscribe(AfterCollectionSaved);
+
             AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneNumberExecute);
             RemovePhoneNumberCommand = new DelegateCommand(OnRemovePhoneNumbeExecute, OnRemovePhoneNumberCanExecute);
 
             ProgrammingLanguages = new ObservableCollection<LookupItem>();
             PhoneNumbers = new ObservableCollection<FriendPhoneNumberModel>();
+        }
+
+        private async void AfterCollectionSaved(AfterCollectionSavedEventArgs args)
+        {
+            if (args.ViewModelName == nameof(ProgrammingLanguageDetailViewModel))
+            {
+                await LoadProgrammingLanguagesLookupAsync();
+            }
         }
 
         private bool OnRemovePhoneNumberCanExecute()
@@ -93,11 +103,6 @@ namespace FriendOrganizerUI.ViewModel
             newNumber.Number = "";
         }
 
-        protected override bool OnDeleteCanExecute()
-        {
-            return FriendModel != null && FriendModel.Id > 0;
-        }
-
         protected override async void OnDeleteExecute()
         {
             if (await _friendRepository.HasMeetingsAsync(FriendModel.Id))
@@ -125,7 +130,7 @@ namespace FriendOrganizerUI.ViewModel
 
         protected override void OnSaveExecute()
         {
-            _friendRepository.SaveFriendAsync(FriendModel.Model);
+            _friendRepository.SaveAsync();
             //HasChanges = _friendRepository.HasChanges();
             SetTitle($"{FriendModel.FirstName} {FriendModel.LastName}");
             Id = FriendModel.Id;
@@ -201,6 +206,7 @@ namespace FriendOrganizerUI.ViewModel
         private Friend CreateNewFriend()
         {
             var friend = new Friend();
+            _friendRepository.Add(friend);
             return friend;
         }
 

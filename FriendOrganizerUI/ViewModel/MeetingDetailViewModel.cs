@@ -142,11 +142,6 @@ namespace FriendOrganizerUI.ViewModel
             }
         }
 
-        protected override bool OnDeleteCanExecute()
-        {
-            return MeetingModel != null && MeetingModel.Id > 0;
-        }
-
         protected override void OnDeleteExecute()
         {
             var result = MessageDialogService.ShowOkCancelDialog("Are you sure you want to delete?", "Question");

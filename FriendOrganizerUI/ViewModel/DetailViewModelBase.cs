@@ -20,7 +20,7 @@ namespace FriendOrganizerUI.ViewModel
             EventAggregator = eventAggregator;
             MessageDialogService = messageDialogService;
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
-            DeleteCommand = new DelegateCommand(OnDeleteExecute, OnDeleteCanExecute);
+            DeleteCommand = new DelegateCommand(OnDeleteExecute);
             CloseDetailViewCommand = new DelegateCommand(OnCloseDetailViewExecute);
         }
 
@@ -70,9 +70,6 @@ namespace FriendOrganizerUI.ViewModel
 
         protected abstract void OnSaveExecute();
 
-        protected abstract bool OnDeleteCanExecute();
-
-
         protected virtual void RaiseDetailDeletedEvent(int modelId)
         {
             EventAggregator.GetEvent<AfterDetailDeletedEvent>().Publish(new
@@ -114,6 +111,15 @@ namespace FriendOrganizerUI.ViewModel
                 .Publish(new AfterDetailClosedEventArgs
                 {
                     Id = this.Id,
+                    ViewModelName = this.GetType().Name
+                });
+        }
+
+        protected virtual void RaiseCollectionSavedEvent()
+        {
+            EventAggregator.GetEvent<AfterCollectionSavedEvent>()
+                .Publish(new AfterCollectionSavedEventArgs
+                {
                     ViewModelName = this.GetType().Name
                 });
         }

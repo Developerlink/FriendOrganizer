@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FriendOrganizerDataAccessLibrary.Repositories
@@ -18,6 +19,12 @@ namespace FriendOrganizerDataAccessLibrary.Repositories
         {
             Context.Set<TEntity>().Add(model);
         }
+
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        {
+            return await Context.Set<TEntity>().ToListAsync();
+        }
+
         public virtual async Task<TEntity> GetByIdAsync(int id)
         {
             return await Context.Set<TEntity>().FindAsync(id);
