@@ -1,8 +1,10 @@
-﻿namespace FriendOrganizerUI.View.Services
+﻿using System.Threading.Tasks;
+
+namespace FriendOrganizerUI.View.Services
 {
     public interface IMessageDialogService
     {
-        MessageDialogResult ShowOkCancelDialog(string text, string title);
-        void ShowInfoDialog(string text);
+        Task<MessageDialogResult> ShowOkCancelDialogAsync(string text, string title);
+        Task ShowInfoDialogAsync(string text);
     }
 }

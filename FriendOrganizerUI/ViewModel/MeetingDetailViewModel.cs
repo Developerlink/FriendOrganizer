@@ -142,13 +142,13 @@ namespace FriendOrganizerUI.ViewModel
             }
         }
 
-        protected override void OnDeleteExecute()
+        protected async override void OnDeleteExecute()
         {
-            var result = MessageDialogService.ShowOkCancelDialog("Are you sure you want to delete?", "Question");
+            var result = await MessageDialogService .ShowOkCancelDialogAsync("Are you sure you want to delete?", "Question");
             if (result == MessageDialogResult.Ok)
             {
                 _meetingRepository.Remove(MeetingModel.Model);
-                _meetingRepository.SaveAsync();
+                await _meetingRepository.SaveAsync();
                 RaiseDetailDeletedEvent(MeetingModel.Id);
             }
         }

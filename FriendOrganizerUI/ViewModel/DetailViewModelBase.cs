@@ -1,5 +1,6 @@
 ﻿using FriendOrganizerUI.Event;
 using FriendOrganizerUI.View.Services;
+using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Events;
 using System;
@@ -96,11 +97,11 @@ namespace FriendOrganizerUI.ViewModel
             Title = title;
         }
 
-        protected virtual void OnCloseDetailViewExecute()
+        protected async virtual void OnCloseDetailViewExecute()
         {
             if (HasChanges)
             {
-                var result = MessageDialogService.ShowOkCancelDialog("You've made changes. Do you still want to close?", "Question");
+                var result = await MessageDialogService.ShowOkCancelDialogAsync("You've made changes. Do you still want to close?", "Question");
                 if (result == MessageDialogResult.Cancel)
                 {
                     return;
@@ -123,6 +124,47 @@ namespace FriendOrganizerUI.ViewModel
                     ViewModelName = this.GetType().Name
                 });
         }
+
+        protected async Task SaveWithOptimisticConcurrencyAsync(
+            Func<Task> saveFunc, 
+            Action afterSaveAction)
+        {
+            try
+            {
+                await saveFunc();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                var databaseValues = ex.Entries.Single().GetDatabaseValues();
+                if (databaseValues == null)
+                {
+                    await MessageDialogService.ShowInfoDialogAsync("The entity has been deleted by another user.");
+                    RaiseDetailDeletedEvent(Id);
+                    return;
+                }
+
+                var result = await MessageDialogService.ShowOkCancelDialogAsync("The entity has been changed in " + "the meantime by someone else. Click OK to save your changes anyway, click Cansel " + "to reload the entity from the database.", "Question");
+
+                if (result == MessageDialogResult.Ok)
+                {
+                    // Need to update the context I'm using to track the database
+                    // with updated values, so the occurency exception stops.
+                    var entry = ex.Entries.Single(); // Get my failed entry.
+                    entry.OriginalValues.SetValues(entry.GetDatabaseValues()); // Update my entry with the database row version.
+                    await saveFunc(); // Save my entity and changes to the database. My updated row version will no longer cause and occurrency exception.
+                }
+                else
+                {
+                    // Reload entity from database
+                    await ex.Entries.Single().ReloadAsync();
+                    await LoadAsync(Id);
+                }
+            }
+
+            afterSaveAction();
+            
+        }
+
 
     }
 }

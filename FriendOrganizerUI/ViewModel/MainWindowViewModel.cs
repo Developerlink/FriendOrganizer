@@ -16,12 +16,14 @@ namespace FriendOrganizerUI.ViewModel
     {
         private IEventAggregator _eventAggregator;
         private IDetailViewModel _selectedDetailViewModel;
+        private IMessageDialogService _messageDialogService;
         private IIndex<string, IDetailViewModel> _detailViewModelCreator;
 
         public MainWindowViewModel(
+            IEventAggregator eventAggregator,            
+            IMessageDialogService messageDialogService,
             INavigationViewModel navigationViewModel,
-            IIndex<string, IDetailViewModel> detailViewModelCreator,
-            IEventAggregator eventAggregator)
+            IIndex<string, IDetailViewModel> detailViewModelCreator)
         {
             _detailViewModelCreator = detailViewModelCreator;
             _eventAggregator = eventAggregator;
@@ -31,6 +33,7 @@ namespace FriendOrganizerUI.ViewModel
                 .Subscribe(AfterDetailDeleted);
             _eventAggregator.GetEvent<AfterDetailClosedEvent>()
                 .Subscribe(AfterDetailClosed);
+            _messageDialogService = messageDialogService;
 
             CreateNewDetailCommand = new DelegateCommand<Type>(OnCreateNewDetailExecute);
             OpenSingleDetailViewCommand = new DelegateCommand<Type>(OnOpenSingleDetailViewExecute);
@@ -64,7 +67,18 @@ namespace FriendOrganizerUI.ViewModel
             if (detailViewModel == null)
             {
                 detailViewModel = _detailViewModelCreator[args.ViewModelName];
+                try
+                {
                 await detailViewModel.LoadAsync(args.Id);
+                }
+                catch 
+                {
+                    await _messageDialogService.ShowInfoDialogAsync("Could not load the entity, maybe it " +
+                        "was deleted in the meantime by another user. The navigation is refreshed " +
+                        "for you.");
+                    await NavigationViewModel.LoadAsync();
+                    return;
+                }
                 DetailViewModels.Add(detailViewModel);
             }        
 
